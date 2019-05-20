@@ -6,15 +6,17 @@ import me.syrym.configuration.config
 import me.syrym.configuration.messageFormats
 import me.syrym.configuration.messageWelcome
 import me.syrym.extension.*
+import me.syrym.service.AnswerSchedulerService
 import me.syrym.service.MessageProcessingService
+import org.koin.core.KoinComponent
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-class MessageProcessingServiceImpl : MessageProcessingService {
+class MessageProcessingServiceImpl(private val schedulerService: AnswerSchedulerService) : MessageProcessingService,
+    KoinComponent {
     private val possibleFormats = config[messageFormats]
     private val greetingMessage = config[messageWelcome]
-    private val schedulerService = AnswerSchedulerServiceImpl()
 
     override fun greet(bot: Bot, update: Update) {
         bot.sendMessage(chatId = update.message!!.chat.id, text = greetingMessage + possibleFormats)
@@ -28,14 +30,14 @@ class MessageProcessingServiceImpl : MessageProcessingService {
             if (messageText.containsOnlyDigits()) {
                 schedulerService.scheduleBotResponse(bot, chatId = chatId, seconds = messageText.toInt())
             } else {
-                /*if (messageText.isInHMSNotation()) {
+                if (messageText.isInHMSNotation()) {
                     schedulerService.scheduleBotResponse(
                         bot, chatId = chatId, seconds =
                         messageText.getHours() * 60 * 60 +
                                 messageText.getMinutes() * 60 +
                                 messageText.getSeconds()
                     )
-                }*/
+                }
                 try {
                     val localTime = LocalTime.parse(
                         messageText.removeAllNonDigit(),
@@ -46,7 +48,7 @@ class MessageProcessingServiceImpl : MessageProcessingService {
                     sendInvalidInputMessage(bot, chatId)
                 }
             }
-        } else if (messageText != "/start"){
+        } else if (messageText != "/start") {
             sendInvalidInputMessage(bot, chatId)
         }
     }
