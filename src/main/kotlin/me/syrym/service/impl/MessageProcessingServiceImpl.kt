@@ -44,11 +44,7 @@ class MessageProcessingServiceImpl(private val schedulerService: AnswerScheduler
                 schedulerService.scheduleBotResponse(chatId, messageText.toInt())
             } else {
                 if (isInHMSNotation(messageText)) {
-                    schedulerService.scheduleBotResponse(
-                        chatId, LocalTime.of(
-                            getHours(messageText), getMinutes(messageText), getSeconds(messageText)
-                        ).toSecondOfDay()
-                    )
+                    processHMSFormatMessage(chatId, messageText)
                 } else {
                     processHHMMSSFormatMessage(chatId, messageText.removeAllNonDigit())
                 }
@@ -58,6 +54,14 @@ class MessageProcessingServiceImpl(private val schedulerService: AnswerScheduler
         } else {
             sendInvalidInputMessage(chatId)
         }
+    }
+
+    private fun processHMSFormatMessage(chatId: Long, message: String) {
+        schedulerService.scheduleBotResponse(
+            chatId, LocalTime.of(
+                getHours(message), getMinutes(message), getSeconds(message)
+            ).toSecondOfDay()
+        )
     }
 
     private fun processHHMMSSFormatMessage(chatId: Long, message: String) {

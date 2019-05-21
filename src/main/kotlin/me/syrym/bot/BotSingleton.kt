@@ -14,7 +14,7 @@ object BotSingleton : KoinComponent {
     private val service: MessageProcessingService by inject()
 
     val bot = bot {
-        logLevel = HttpLoggingInterceptor.Level.NONE
+        logLevel = HttpLoggingInterceptor.Level.BASIC
         token = config[apiToken]
         dispatch {
             text { bot, update -> service.processMessage(update) }

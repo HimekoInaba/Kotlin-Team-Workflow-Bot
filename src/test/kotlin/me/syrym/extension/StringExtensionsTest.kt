@@ -6,25 +6,25 @@ import org.junit.jupiter.api.Test
 class StringExtensionsTest {
 
     @Test
-    fun `test containsDigits is true`() {
+    fun `test containsDigits`() {
         val text = "22ss33"
         Assertions.assertTrue(text.containsDigits())
     }
 
     @Test
-    fun `test containsDigits is false`() {
+    fun `test containsDigits for incorrect string`() {
         val text = "adsascxxx"
         Assertions.assertFalse(text.containsDigits())
     }
 
     @Test
-    fun `test containsOnlyDigits is true`() {
+    fun `test containsOnlyDigits`() {
         val text = "623424"
         Assertions.assertTrue(text.containsOnlyDigits())
     }
 
     @Test
-    fun `test containsOnlyDigits is false`() {
+    fun `test containsOnlyDigits for incorrect string`() {
         val text = "adsas22cxxx"
         Assertions.assertFalse(text.containsOnlyDigits())
     }
