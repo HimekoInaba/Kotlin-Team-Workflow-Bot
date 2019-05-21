@@ -6,10 +6,16 @@ import me.syrym.configuration.config
 import me.syrym.configuration.errMessage
 import me.syrym.configuration.messageFormats
 import me.syrym.configuration.messageWelcome
-import me.syrym.extension.*
+import me.syrym.extension.containsDigits
+import me.syrym.extension.containsOnlyDigits
+import me.syrym.extension.removeAllNonDigit
 import me.syrym.service.AnswerSchedulerService
 import me.syrym.service.MessageProcessingService
+import me.syrym.util.getHours
+import me.syrym.util.getMinutes
+import me.syrym.util.getSeconds
 import me.syrym.util.parseHHMMSSFormatStringToLocalTime
+import me.syrym.util.validator.isInHMSNotation
 import org.koin.core.KoinComponent
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
@@ -30,16 +36,17 @@ class MessageProcessingServiceImpl(private val schedulerService: AnswerScheduler
 
         if (messageText == null) {
             sendInvalidInputMessage(chatId)
+            return
         }
 
-        if (messageText!!.containsDigits()) {
+        if (messageText.containsDigits()) {
             if (messageText.containsOnlyDigits()) {
                 schedulerService.scheduleBotResponse(chatId, messageText.toInt())
             } else {
-                if (messageText.isInHMSNotation()) {
+                if (isInHMSNotation(messageText)) {
                     schedulerService.scheduleBotResponse(
                         chatId, LocalTime.of(
-                            messageText.getHours(), messageText.getMinutes(), messageText.getSeconds()
+                            getHours(messageText), getMinutes(messageText), getSeconds(messageText)
                         ).toSecondOfDay()
                     )
                 } else {
