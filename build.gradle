@@ -15,7 +15,8 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'io.github.seik.kotlin-telegram-bot:telegram:0.3.4'
     implementation 'com.natpryce:konfig:1.6.10.0'
-    implementation "org.koin:koin-core:2.0.0-GA6"
+    implementation 'org.koin:koin-core:2.0.0-GA6'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 }
 
